@@ -1,0 +1,106 @@
+﻿<!doctype html>
+<html lang="en-au">
+    <head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge;chrome=1" >
+        <link rel="stylesheet" href="C:\Users\BADELMATT1\Desktop\tests/css/style.css" />
+        <link href="C:\Users\BADELMATT1\Desktop\tests/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="C:\Users\BADELMATT1\Desktop\tests/css/prettify.css" />
+		<style type="text/css">
+			body {
+				font-family: Helvetica, Arial, sans-serif;
+				font-size: 13px;
+				padding: 0 0 50px 0;
+			}
+			.contain {
+				width: 100%;
+				margin: 0 auto;
+			}
+			h1 {
+				margin: 40px 0 20px 0;
+			}
+			h2 {
+				font-size: 1.5em;
+				padding-bottom: 3px;
+				border-bottom: 1px solid #DDD;
+				margin-top: 50px;
+				margin-bottom: 25px;
+			}
+			table th:first-child {
+				width: 150px;
+			}
+		</style>
+    </head>
+    <body>
+
+		<div class="contain">	
+			<div class="gantt"></div>
+    </body>
+	<script src="C:\Users\BADELMATT1\Desktop\tests/js/jquery.min.js"></script>
+	<script src="C:\Users\BADELMATT1\Desktop\tests/js/jquery.fn.gantt.min.js"></script>
+	<script src="C:\Users\BADELMATT1\Desktop\tests/js/moment.min.js"></script>
+	<script src="C:\Users\BADELMATT1\Desktop\tests/js/bootstrap.min.js"></script>
+	<script src="C:\Users\BADELMATT1\Desktop\tests/js/prettify.js"></script>
+    <script>
+
+		$(function() {
+
+			"use strict";
+
+			var source = [];
+			var values = [];
+			var fromMII = [
+			{WorkCenter:"WorkCenter1", Description: "tornio 1", Operation:"Operazione 1", From:"1499454000000", To:"1499540400000"},
+			{WorkCenter:"WorkCenter2", Description: "seppiatrice", Operation:"Operazione 4", From:"1499493600000", To:"1499580000000"},
+			{WorkCenter:"WorkCenter3", Description: "tornio 2", Operation:"Operazione 2", From:"1499497200000", To:"1499540400000"},
+			{WorkCenter:"WorkCenter2", Description: "seppiatrice", Operation:"Operazione 3", From:"1499407200000", To:"1499432400000"}
+			];
+			
+			
+			var aFromMII = fromMII.reduce(function(result, current) {
+				result[current.WorkCenter] = result[current.WorkCenter] || [];
+				result[current.WorkCenter].push(current);
+				return result;
+			}, {});
+			
+			$.each(aFromMII, function(key, val){
+					$.each(val, function(key, workcenter){
+					var nFrom = parseInt(workcenter.From);
+					var nTo = parseInt(workcenter.To);
+					var dFrom = new Date(nFrom);
+					var dTo = new Date(nTo);
+					var sFrom = (dFrom.getDate()<10?'0':'')+dFrom.getDate() +"/"+ ((dFrom.getMonth()+1)<10?'0':'') +(dFrom.getMonth()+1) +"/"+ dFrom.getFullYear() +" "+ dFrom.getHours() +":"+ (dFrom.getMinutes()<10?'0':'') + dFrom.getMinutes() +":"+ (dFrom.getSeconds()<10?'0':'')+dFrom.getSeconds(); 
+					var sTo = (dTo.getDate()<10?'0':'') +dTo.getDate() +"/"+ ((dTo.getMonth()+1)<10?'0':'') +(dTo.getMonth()+1) +"/"+ dTo.getFullYear() +" "+ dTo.getHours() +":"+ (dTo.getMinutes()<10?'0':'') + dTo.getMinutes() +":"+ (dTo.getSeconds()<10?'0':'')+dTo.getSeconds();
+					values.push({
+						from: "/Date("+workcenter.From+")/",
+						to: "/Date("+workcenter.To+")/",
+						desc: workcenter.Operation,
+						customClass:  sFrom +" -> "+ sTo
+					});
+					})
+					
+					source.push({name:val[0].WorkCenter
+							,desc: val[0].Description
+							,values : values							
+					});
+					
+					values = [];
+			});
+			
+			$(".gantt").gantt({
+				source: source,
+				itemsPerPage: 10,
+				scale: "hours",
+				minScale: "hours",
+				navigate: "scroll",
+				scrollToToday: false,
+				months: ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"],
+				dow: ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"],
+				waitText: "Caricamento..."
+			});
+
+
+		});
+
+    </script>
+</html>
